@@ -1,0 +1,19 @@
+{
+  "name": "academic-network-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karanwadhwa/academic-network-backend.git"
+  },
+  "author": "Karan Wadhwa",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "bugs": {
+    "url": "https://github.com/karanwadhwa/academic-network-backend/issues"
+  },
+  "homepage": "https://github.com/karanwadhwa/academic-network-backend#readme"
+}
