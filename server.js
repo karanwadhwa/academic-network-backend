@@ -7,6 +7,7 @@ require("dotenv-safe").config();
 // import route files
 const auth = require("./routes/api/auth");
 const profile = require("./routes/api/profile");
+const posts = require("./routes/api/posts");
 
 const app = express();
 const {
@@ -39,6 +40,7 @@ app.get("/", (req, res) => res.send(`Server running on port ${port}`));
 // Use Routes
 app.use("/api/auth", auth);
 app.use("/api/profile", profile);
+app.use("/api/posts", posts);
 
 // Start Server
 app.listen(port, () => console.info(`Server started on port ${port}`));
