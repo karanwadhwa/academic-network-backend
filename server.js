@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 require("dotenv-safe").config();
 
+// import route files
+const auth = require("./routes/api/auth");
+
 const app = express();
 const {
   API_PORT,
@@ -29,6 +32,11 @@ mongoose
   .then(() => console.log("Connected to DB"))
   .catch(error => console.log(error));
 
+// Basic Route
 app.get("/", (req, res) => res.send(`Server running on port ${port}`));
 
+// Use Routes
+app.use("/api/auth", auth);
+
+// Start Server
 app.listen(port, () => console.info(`Server started on port ${port}`));
