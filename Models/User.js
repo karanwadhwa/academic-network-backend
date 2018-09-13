@@ -11,7 +11,7 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  regNo: {
+  reg: {
     type: Number,
     required: true,
     min: 5,
@@ -30,6 +30,11 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+    default: Date.now
   }
 });
 
