@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
 require("dotenv").config();
 require("dotenv-safe").config();
@@ -9,7 +10,7 @@ const auth = require("./routes/api/auth");
 const profile = require("./routes/api/profile");
 const posts = require("./routes/api/posts");
 
-const app = express();
+// destructured import environment variables
 const {
   API_PORT,
   DB_NAME,
@@ -18,6 +19,12 @@ const {
   DB_USER,
   DB_PASSWORD
 } = process.env;
+
+const app = express();
+
+// body-parser middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 const port = API_PORT || 5000;
 const mongoURI = `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
