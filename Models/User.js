@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema();
+const Schema = mongoose.Schema;
 
 // Create Schema
 const UserSchema = new Schema({
@@ -13,15 +13,11 @@ const UserSchema = new Schema({
   },
   reg: {
     type: Number,
-    required: true,
-    min: 5,
-    max: 5
+    required: true
   },
   smartCardId: {
     type: String,
-    required: true,
-    min: 11,
-    max: 11
+    required: true
   },
   email: {
     type: String,
@@ -33,7 +29,6 @@ const UserSchema = new Schema({
   },
   createdAt: {
     type: Date,
-    required: true,
     default: Date.now
   }
 });
