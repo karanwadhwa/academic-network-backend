@@ -47,4 +47,34 @@ router.post("/register", (req, res) => {
   });
 });
 
+// @route   POST /api/auth/login
+// @desc    login / generate JWT token
+// @access  Public
+router.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  // Check if login request is using email or registration no
+  query = username.indexOf("@") == -1 ? { reg: username } : { email: username };
+
+  // Find user
+  User.findOne(query).then(user => {
+    // Check if account exists
+    if (!user) {
+      return res
+        .status(404)
+        .json({ err: { username: "Invalid Credentials." } });
+    }
+
+    // Validate Password
+    bcrypt.compare(password, user.password).then(isMatch => {
+      if (isMatch) {
+        res.json({ msg: "Login Successful" });
+      } else {
+        return res
+          .status(400)
+          .json({ err: { password: "Invalid Credentials." } });
+      }
+    });
+  });
+});
+
 module.exports = router;
