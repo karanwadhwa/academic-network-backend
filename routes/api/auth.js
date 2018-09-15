@@ -17,6 +17,9 @@ router.get("/test", (req, res) => {
 // @desc    register account
 // @access  Public
 router.post("/register", (req, res) => {
+  const { fname, lname, reg, smartCardId, email, password } = req.body;
+
+  // Check if user exists
   User.findOne({ reg: req.body.reg }).then(user => {
     if (user) {
       return res.status(400).json({
@@ -24,15 +27,10 @@ router.post("/register", (req, res) => {
         err: { reg: `An Account with Registration number: ${user.reg} already exists.` }
       });
     } else {
-      newUser = new User({
-        fname: req.body.fname,
-        lname: req.body.lname,
-        reg: req.body.reg,
-        smartCardId: req.body.smartCardId,
-        email: req.body.email,
-        password: req.body.password
-      });
+      // Create new User object
+      newUser = new User({ fname, lname, reg, smartCardId, email, password });
 
+      // Hash password before saving
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(newUser.password, salt, (err, hash) => {
           if (err) throw err;
