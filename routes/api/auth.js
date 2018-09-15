@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const User = require("../../models/User");
 
@@ -65,7 +66,27 @@ router.post("/login", (req, res) => {
     // Validate Password
     bcrypt.compare(password, user.password).then(isMatch => {
       if (isMatch) {
-        res.json({ msg: "Login Successful" });
+        // Create Payload for JWT
+        const payload = {
+          id: user.id,
+          email: user.email,
+          reg: user.reg,
+          fname: user.fname,
+          lname: user.lname
+        };
+
+        // Sign Token
+        jwt.sign(
+          payload,
+          process.env.JWT_SECRET,
+          { expiresIn: "2h" },
+          (err, token) => {
+            res.json({
+              loginSuccess: true,
+              token: `Bearer ${token}`
+            });
+          }
+        );
       } else {
         return res
           .status(400)
