@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const passport = require("passport");
 
 require("dotenv").config();
 require("dotenv-safe").config();
@@ -28,6 +29,11 @@ app.use(bodyParser.json());
 
 const port = API_PORT || 5000;
 const mongoURI = `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+
+// passport middleware
+app.use(passport.initialize());
+// passport config
+require("./config/passport")(passport);
 
 // Connect to DB
 mongoose

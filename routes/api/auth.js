@@ -1,7 +1,7 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const passport = require("passport");
 
 const User = require("../../models/User");
 
@@ -95,5 +95,16 @@ router.post("/login", (req, res) => {
     });
   });
 });
+
+// @route   GET /api/auth/test-protected-route
+// @desc    for testing protected routes, logs jwt payload for the currently logged in user
+// @access  Protected
+router.get(
+  "/test-protected-route",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    res.json({ msg: "/api/auth/test-protected-route" });
+  }
+);
 
 module.exports = router;
