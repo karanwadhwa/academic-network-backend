@@ -8,6 +8,7 @@ const User = require("../../models/User");
 
 // Load Input Validaton
 const validateRegisterInput = require("../validation/register");
+const validateLoginInput = require("../validation/login");
 
 const router = express.Router();
 
@@ -67,6 +68,13 @@ router.post("/register", (req, res) => {
 // @access  Public
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
+
+  // Input Validation
+  const { errors, isValid } = validateLoginInput(req.body);
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   // Check if login request is using email or registration no
   query = username.indexOf("@") == -1 ? { reg: username } : { email: username };
 
@@ -74,9 +82,8 @@ router.post("/login", (req, res) => {
   User.findOne(query).then(user => {
     // Check if account exists
     if (!user) {
-      return res
-        .status(404)
-        .json({ err: { username: "Invalid Credentials." } });
+      errors.username = "Invalid Credentials";
+      return res.status(404).json(errors);
     }
 
     // Validate Password
@@ -104,9 +111,8 @@ router.post("/login", (req, res) => {
           }
         );
       } else {
-        return res
-          .status(400)
-          .json({ err: { password: "Invalid Credentials." } });
+        errors.password = "Invalid Credentials";
+        return res.status(400).json(errors);
       }
     });
   });
