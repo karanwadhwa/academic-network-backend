@@ -3,7 +3,11 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
+// Import Models
 const User = require("../../models/User");
+
+// Load Input Validaton
+const validateRegisterInput = require("../validation/register");
 
 const router = express.Router();
 
@@ -20,16 +24,28 @@ router.get("/test", (req, res) => {
 router.post("/register", (req, res) => {
   const { fname, lname, reg, smartCardId, email, password } = req.body;
 
+  // Input Validation
+  const { errors, isValid } = validateRegisterInput(req.body);
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   // Check if user exists
   User.findOne({ reg: req.body.reg }).then(user => {
     if (user) {
-      return res.status(400).json({
-        // prettier-ignore
-        err: { reg: `An Account with Registration number: ${user.reg} already exists.` }
-      });
+      // prettier-ignore
+      errors.reg = `An Account with Registration number: ${user.reg} already exists.`;
+      return res.status(400).json(errors);
     } else {
       // Create new User object
-      newUser = new User({ fname, lname, reg, smartCardId, email, password });
+      newUser = new User({
+        fname: fname.trim().toLowerCase(),
+        lname: lname.trim().toLowerCase(),
+        reg: reg.trim(),
+        smartCardId: smartCardId.trim().toUpperCase(),
+        email: email.trim().toLowerCase(),
+        password
+      });
 
       // Hash password before saving
       bcrypt.genSalt(10, (err, salt) => {
