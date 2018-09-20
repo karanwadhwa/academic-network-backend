@@ -11,10 +11,14 @@ module.exports = validateLoginInput = data => {
 
   // Check username field
   if (
+    // check if username is student registration no
     !validator.isInt(data.username, {
       min: REG_NO_LOWER_LIMIT,
       max: REG_NO_UPPER_LIMIT
     }) &&
+    // check if username is staff id
+    /([a-zA-Z]{1}[0-9]{3})/.test(data.userID) &&
+    // check if username is college issued email
     !validator.isEmail(data.username) &&
     !data.username.toLowerCase().includes(EMAIL_DOMAIN)
   ) {

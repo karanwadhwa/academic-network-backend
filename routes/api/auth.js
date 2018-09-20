@@ -23,7 +23,7 @@ router.get("/test", (req, res) => {
 // @desc    register account
 // @access  Public
 router.post("/register", (req, res) => {
-  const { fname, lname, reg, smartCardId, email, password } = req.body;
+  const { fname, lname, userID, email, userType, password } = req.body;
 
   // Input Validation
   const { errors, isValid } = validateRegisterInput(req.body);
@@ -32,19 +32,19 @@ router.post("/register", (req, res) => {
   }
 
   // Check if user exists
-  User.findOne({ reg: req.body.reg }).then(user => {
+  User.findOne({ userID: req.body.userID }).then(user => {
     if (user) {
       // prettier-ignore
-      errors.reg = `An Account with Registration number: ${user.reg} already exists.`;
+      errors.userID = `An Account with User ID: ${user.userID} already exists.`;
       return res.status(400).json(errors);
     } else {
       // Create new User object
       newUser = new User({
         fname: fname.trim().toLowerCase(),
         lname: lname.trim().toLowerCase(),
-        reg: reg.trim(),
-        smartCardId: smartCardId.trim().toUpperCase(),
+        userID: userID.trim().toUpperCase(),
         email: email.trim().toLowerCase(),
+        userType: userType.trim().toLowerCase(),
         password
       });
 
@@ -75,8 +75,11 @@ router.post("/login", (req, res) => {
     return res.status(400).json(errors);
   }
 
-  // Check if login request is using email or registration no
-  query = username.indexOf("@") == -1 ? { reg: username } : { email: username };
+  // Check if login request is using email or userID
+  query =
+    username.indexOf("@") == -1
+      ? { userID: username.toUpperCase() }
+      : { email: username.toLowerCase() };
 
   // Find user
   User.findOne(query).then(user => {
@@ -92,10 +95,11 @@ router.post("/login", (req, res) => {
         // Create Payload for JWT
         const payload = {
           id: user.id,
-          email: user.email,
-          reg: user.reg,
           fname: user.fname,
-          lname: user.lname
+          lname: user.lname,
+          userID: user.userID,
+          email: user.email,
+          userType: user.type
         };
 
         // Sign Token

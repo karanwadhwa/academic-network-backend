@@ -6,9 +6,9 @@ module.exports = validateRegisterInput = data => {
 
   data.fname = !isEmpty(data.fname) ? data.fname : "";
   data.lname = !isEmpty(data.lname) ? data.lname : "";
-  data.reg = !isEmpty(data.reg) ? data.reg : "";
-  data.smartCardId = !isEmpty(data.smartCardId) ? data.smartCardId : "";
+  data.userID = !isEmpty(data.userID) ? data.userID : "";
   data.email = !isEmpty(data.email) ? data.email : "";
+  data.userType = !isEmpty(data.userType) ? data.userType : "";
   data.password = !isEmpty(data.password) ? data.password : "";
   data.password2 = !isEmpty(data.password2) ? data.password2 : "";
 
@@ -30,26 +30,13 @@ module.exports = validateRegisterInput = data => {
 
   // Check registration number
   if (
-    !validator.isInt(data.reg, {
+    !validator.isInt(data.userID, {
       min: Number(process.env.REG_NO_LOWER_LIMIT),
       max: Number(process.env.REG_NO_UPPER_LIMIT)
-    })
+    }) &&
+    !/([a-zA-Z]{1}[0-9]{3})/.test(data.userID)
   ) {
-    errors.reg = "Enter a valid Registration number";
-  }
-
-  // Check smartCardId field
-  if (!validator.isAlphanumeric(data.smartCardId.trim())) {
-    errors.smartCardId =
-      "Smart Card Id cannot contain spaces or special characters";
-  }
-  if (
-    !validator.isLength(data.smartCardId, {
-      min: process.env.SMARTCARDID_LENGTH,
-      max: process.env.SMARTCARDID_LENGTH
-    })
-  ) {
-    errors.smartCardId = "Enter a valid Smart Card Id";
+    errors.userID = "Enter a valid Registration number or Staff ID";
   }
 
   // Check email field
@@ -58,6 +45,11 @@ module.exports = validateRegisterInput = data => {
   }
   if (!data.email.toLowerCase().includes(process.env.EMAIL_DOMAIN)) {
     errors.email = "Enter your college-assigned email id";
+  }
+
+  // Check user type
+  if (validator.isEmpty(data.userType)) {
+    errors.userType = "User Type is required";
   }
 
   // Check and Match passwords
