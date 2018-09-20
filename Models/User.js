@@ -11,15 +11,16 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  reg: {
-    type: Number,
-    required: true
+  userID: {
+    type: String,
+    required: true,
+    unique: true
   },
-  smartCardId: {
+  email: {
     type: String,
     required: true
   },
-  email: {
+  userType: {
     type: String,
     required: true
   },
