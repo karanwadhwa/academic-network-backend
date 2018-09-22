@@ -34,7 +34,7 @@ module.exports = validateRegisterInput = data => {
       min: Number(process.env.REG_NO_LOWER_LIMIT),
       max: Number(process.env.REG_NO_UPPER_LIMIT)
     }) &&
-    !/([a-zA-Z]{1}[0-9]{3})/.test(data.userID)
+    !/^[a-zA-Z]{1}\d{3}$/.test(data.userID)
   ) {
     errors.userID = "Enter a valid Registration number or Staff ID";
   }
