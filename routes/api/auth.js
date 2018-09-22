@@ -32,7 +32,7 @@ router.post("/register", (req, res) => {
   }
 
   // Check if user exists
-  User.findOne({ userID: req.body.userID }).then(user => {
+  User.findOne({ userID: req.body.userID.toUpperCase() }).then(user => {
     if (user) {
       // prettier-ignore
       errors.userID = `An Account with User ID: ${user.userID} already exists.`;
