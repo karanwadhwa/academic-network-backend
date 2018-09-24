@@ -35,4 +35,90 @@ router.get(
   }
 );
 
+// @route   POST /api/profile
+// @desc    creates student profile
+// @access  Protected
+router.post(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const profileFields = {};
+    profileFields.subscriptions = [];
+
+    // Set the userKey and userID from User model stored in req.user
+    profileFields.userKey = req.user.id;
+    profileFields.userID = req.user.userID;
+
+    profileFields.smartCardID = req.body.smartCardID;
+
+    // optional fields
+    if (req.body.bio) profileFields.bio = req.body.bio;
+    if (req.body.phone) profileFields.phone = req.body.phone;
+
+    // mentor details
+    profileFields.mentor = {};
+    profileFields.mentor.name = req.body.mentorName;
+    profileFields.mentor.userID = req.body.mentorID;
+
+    // courseDetails
+    const courseDetailsFields = [
+      "department",
+      "year",
+      "class",
+      "rollNo",
+      "batch"
+    ];
+    profileFields.courseDetails = {};
+
+    // since elective is the only optional field, check if its present
+    if (req.body.elective)
+      profileFields.courseDetails.elective = req.body.elective;
+
+    // loop through courseDetailsFields and add all fields, no need to check
+    courseDetailsFields.forEach(field => {
+      profileFields.courseDetails[field] = req.body[field];
+    });
+
+    // subscription tags from courseDetailsFields
+    profileFields.subscriptions.push(req.body.department);
+    profileFields.subscriptions.push(req.body.year);
+    profileFields.subscriptions.push(`${req.body.year}-${req.body.department}`);
+    profileFields.subscriptions.push(req.body.class);
+    profileFields.subscriptions.push(req.body.batch);
+
+    // Student council details
+    const studentCouncilFields = [
+      "IEEE",
+      "CSI",
+      "ISTE",
+      "IETE",
+      "ACM",
+      "ECELL"
+    ];
+    profileFields.studentCouncils = {};
+    // loop through council fields and add any fields that are present
+    studentCouncilFields.forEach(field => {
+      if (req.body[field]) {
+        profileFields.studentCouncils[field] = req.body[field];
+        // add council rank/membership to subscriptions as well
+        profileFields.subscriptions.push(`${field}-${req.body[field]}`);
+      }
+    });
+
+    StudentProfile.findOne({ userKey: req.user.id }).then(profile => {
+      if (profile) {
+        const errors = {
+          existingProfile:
+            "profile for this user already exists, try update route"
+        };
+        return res.status(400).json(errors);
+      }
+      new StudentProfile(profileFields)
+        .save()
+        .then(profile => res.status(201).json(profile))
+        .catch(err => res.status(400).json(err));
+    });
+  }
+);
+
 module.exports = router;
