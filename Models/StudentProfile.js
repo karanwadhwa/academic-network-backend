@@ -23,14 +23,6 @@ const StudentProfileSchema = new Schema({
     unique: true
   },
 
-  // no idea why this is here
-  // keeping it around anyway
-  userType: {
-    type: String,
-    //required: true,
-    default: "Student"
-  },
-
   // mod access
   moderator: {
     type: Boolean,
@@ -41,7 +33,10 @@ const StudentProfileSchema = new Schema({
 
   phone: Number,
 
-  badges: [String],
+  badges: {
+    type: [String],
+    default: []
+  },
 
   // mentor details
   mentor: {
