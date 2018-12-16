@@ -182,4 +182,68 @@ router.post(
   }
 );
 
+// @route   POST /api/profile/update/professor/mentee
+// @desc    assign mentees to the logged in professor
+// @access  Protected
+router.post(
+  "/update/professor/mentee",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    if (req.user.userType !== "professor") {
+      return res.status(404).json({
+        error:
+          "invalid user type. User needs to be a professor to access this route"
+      });
+    }
+
+    ProfessorProfile.findOne({ userKey: req.user.id }).then(profile => {
+      const newMentee = {
+        name: req.body.name,
+        userID: req.body.userID,
+        smartCardID: req.body.smartCardID,
+        phone: req.body.phone,
+        email: req.body.email
+      };
+
+      // Add to mentee array
+      profile.mentees.push(newMentee);
+
+      profile.save().then(profile => res.status(201).json(profile));
+    });
+  }
+);
+
+// @route   POST /api/profile/update/professor/education
+// @desc    add qualifications to the logged in professor
+// @access  Protected
+router.post(
+  "/update/professor/education",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    if (req.user.userType !== "professor") {
+      return res.status(404).json({
+        error:
+          "invalid user type. User needs to be a professor to access this route"
+      });
+    }
+
+    ProfessorProfile.findOne({ userKey: req.user.id }).then(profile => {
+      const newEdu = {
+        school: req.body.school,
+        degree: req.body.degree,
+        field: req.body.field,
+        from: req.body.from
+      };
+
+      if (req.body.to) newEdu.to = req.body.to;
+      if (req.body.current) newEdu.current = req.body.current;
+
+      // Add to mentee array
+      profile.education.push(newEdu);
+
+      profile.save().then(profile => res.status(201).json(profile));
+    });
+  }
+);
+
 module.exports = router;
