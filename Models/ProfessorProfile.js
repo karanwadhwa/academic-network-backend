@@ -1,0 +1,120 @@
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const ProfessorProfileSchema = new Schema({
+  // _id key from users collection
+  userKey: {
+    type: Schema.Types.ObjectId,
+    ref: "users",
+    required: true,
+    unique: true
+  },
+
+  // userID - Registration No / StaffID
+  userID: {
+    type: String,
+    required: true,
+    unique: true
+  },
+
+  branch: {
+    type: String,
+    required: true
+  },
+
+  // mod access
+  moderator: {
+    type: Boolean,
+    default: false
+  },
+
+  bio: String,
+
+  phone: Number,
+
+  badges: {
+    type: [String],
+    default: []
+  },
+
+  // mentee details
+  mentees: {
+    type: Array,
+    name: {
+      type: String,
+      required: true
+    },
+    userID: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    smartCardID: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    phone: {
+      type: Number,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    }
+  },
+
+  subscriptions: {
+    type: Array,
+    required: true,
+    default: ["public", "professors"]
+  },
+
+  designation: {
+    type: String,
+    required: true
+  },
+
+  education: {
+    type: Array,
+    school: {
+      type: String,
+      required: true
+    },
+    degree: {
+      type: String,
+      required: true
+    },
+    field: {
+      type: String,
+      required: true
+    },
+    from: {
+      type: Number,
+      required: true,
+      min: 1950,
+      max: 2050
+    },
+    to: {
+      type: Number,
+      min: 1950,
+      max: 2050
+    },
+    current: {
+      type: Boolean,
+      required: true,
+      default: false
+    }
+  }
+
+  /* blocked: {
+    type: Boolean,
+    default: false
+  } */
+});
+
+module.exports = ProfessorProfile = mongoose.model(
+  "professor-profiles",
+  ProfessorProfileSchema
+);
