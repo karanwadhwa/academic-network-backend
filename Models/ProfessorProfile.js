@@ -17,7 +17,12 @@ const ProfessorProfileSchema = new Schema({
     unique: true
   },
 
-  branch: {
+  department: {
+    type: String,
+    required: true
+  },
+
+  designation: {
     type: String,
     required: true
   },
@@ -62,18 +67,14 @@ const ProfessorProfileSchema = new Schema({
       type: String,
       required: true,
       unique: true
-    }
+    },
+    default: []
   },
 
   subscriptions: {
     type: Array,
     required: true,
     default: ["public", "professors"]
-  },
-
-  designation: {
-    type: String,
-    required: true
   },
 
   education: {
@@ -105,7 +106,8 @@ const ProfessorProfileSchema = new Schema({
       type: Boolean,
       required: true,
       default: false
-    }
+    },
+    default: []
   }
 
   /* blocked: {
