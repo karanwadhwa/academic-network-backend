@@ -35,15 +35,23 @@ router.get(
   }
 );
 
-// @route   POST /api/profile
+// @route   POST /api/profile/create/student
 // @desc    creates student profile
 // @access  Protected
 router.post(
-  "/",
+  "/create/student",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
+    //check usertype
+    if (req.user.userType !== "student") {
+      return res.status(404).json({
+        error:
+          "invalid user type. User needs to be a student to access this route"
+      });
+    }
+
     const profileFields = {};
-    profileFields.subscriptions = [];
+    profileFields.subscriptions = ["public", "students"];
 
     // Set the userKey and userID from User model stored in req.user
     profileFields.userKey = req.user.id;
