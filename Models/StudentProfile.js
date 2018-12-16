@@ -84,7 +84,7 @@ const StudentProfileSchema = new Schema({
   subscriptions: {
     type: Array,
     required: true,
-    default: ["public"]
+    default: ["public", "students"]
   },
 
   studentCouncils: {
