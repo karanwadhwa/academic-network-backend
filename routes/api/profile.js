@@ -8,6 +8,7 @@ const ProfessorProfile = require("../../models/ProfessorProfile");
 
 // Load Input Validaton
 const validateUpdateMenteeInput = require("../validation/profile/updateMentee");
+const validateUpdateEduInput = require("../validation/profile/updateEdu");
 
 const router = express.Router();
 
@@ -234,6 +235,12 @@ router.post(
         error:
           "invalid user type. User needs to be a professor to access this route"
       });
+    }
+
+    // Input Validation
+    const { errors, isValid } = validateUpdateEduInput(req.body);
+    if (!isValid) {
+      return res.status(400).json(errors);
     }
 
     ProfessorProfile.findOne({ userKey: req.user.id }).then(profile => {
