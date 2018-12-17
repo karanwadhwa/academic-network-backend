@@ -7,6 +7,7 @@ const StudentProfile = require("../../models/StudentProfile");
 const ProfessorProfile = require("../../models/ProfessorProfile");
 
 // Load Input Validaton
+const validateCreateProfessorInput = require("../validation/profile/createProfessor");
 const validateUpdateMenteeInput = require("../validation/profile/updateMentee");
 const validateUpdateEduInput = require("../validation/profile/updateEdu");
 
@@ -147,6 +148,12 @@ router.post(
         error:
           "invalid user type. User needs to be a professor to access this route"
       });
+    }
+
+    // Input Validation
+    const { errors, isValid } = validateCreateProfessorInput(req.body);
+    if (!isValid) {
+      return res.status(400).json(errors);
     }
 
     // This route only creates a basic professor profile
