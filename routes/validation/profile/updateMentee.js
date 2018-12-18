@@ -43,7 +43,7 @@ module.exports = validateUpdateMenteeInput = data => {
       max: Number(SMARTCARDID_LENGTH)
     })
   ) {
-    errors.smartCardID = "Invalid Smart Card no.";
+    errors.smartCardID = "Enter a valid Smart Card no.";
   }
   if (validator.isEmpty(data.smartCardID)) {
     errors.smartCardID = "Student Smart Card no. is required";
@@ -53,10 +53,19 @@ module.exports = validateUpdateMenteeInput = data => {
   if (validator.isEmpty(data.phone)) {
     errors.phone = "Student phone is required";
   }
+  if (!validator.isInt(data.phone)) {
+    errors.phone = "Enter your 10 digit phone no.";
+  }
+  if (!validator.isLength(data.phone, { min: 10, max: 10 })) {
+    errors.phone = "Enter your 10 digit phone no.";
+  }
 
   // Check email field
   if (validator.isEmpty(data.email)) {
     errors.email = "Mentee email is required";
+  }
+  if (!validator.isEmail(data.email)) {
+    errors.email = "Enter a valid email address";
   }
 
   return {
