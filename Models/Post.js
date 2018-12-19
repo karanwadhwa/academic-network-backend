@@ -31,6 +31,13 @@ const PostSchema = new Schema({
     default: DEFAULT_AVATAR
   },
 
+  audience: [
+    {
+      type: String,
+      required: true
+    }
+  ],
+
   date: {
     type: Date,
     required: true,
