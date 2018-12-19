@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const { DEFAULT_AVATAR } = process.env;
+
 // Create Schema
 const UserSchema = new Schema({
   fname: {
@@ -24,6 +26,17 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  avatar: {
+    type: String,
+    required: true,
+    default: DEFAULT_AVATAR
+  },
+  audience: [
+    {
+      type: String,
+      default: []
+    }
+  ],
   password: {
     type: String,
     required: true
