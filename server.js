@@ -49,6 +49,10 @@ mongoose
   .then(() => console.log("Connected to DB"))
   .catch(error => console.log(error));
 
+// Fix: DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+// refer documentation: https://mongoosejs.com/docs/deprecations.html#-ensureindex-
+mongoose.set("useCreateIndex", true);
+
 // Basic Route
 app.get("/", (req, res) => res.send(`Server running on port ${port}`));
 
