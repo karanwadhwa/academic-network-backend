@@ -31,12 +31,16 @@ const UserSchema = new Schema({
     required: true,
     default: DEFAULT_AVATAR
   },
-  audience: [
-    {
-      type: String,
-      default: []
-    }
-  ],
+  audience: {
+    type: Array,
+    required: true,
+    default: []
+  },
+  subscriptions: {
+    type: Array,
+    required: true,
+    default: []
+  },
   password: {
     type: String,
     required: true

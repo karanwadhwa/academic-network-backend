@@ -80,13 +80,13 @@ const StudentProfileSchema = new Schema({
       default: false
     }
   },
-
+  /* 
   subscriptions: {
     type: Array,
     required: true,
     default: ["public", "students"]
   },
-
+ */
   studentCouncils: {
     IEEE: {
       type: String,

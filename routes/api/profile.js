@@ -64,7 +64,7 @@ router.post(
     }
 
     const profileFields = {};
-    profileFields.subscriptions = ["public", "students"];
+    const newSubs = ["public", "students"];
 
     // Set the userKey and userID from User model stored in req.user
     profileFields.userKey = req.user.id;
@@ -101,11 +101,11 @@ router.post(
     });
 
     // subscription tags from courseDetailsFields
-    profileFields.subscriptions.push(req.body.department);
-    profileFields.subscriptions.push(req.body.year);
-    profileFields.subscriptions.push(`${req.body.year}-${req.body.department}`);
-    profileFields.subscriptions.push(req.body.class);
-    profileFields.subscriptions.push(req.body.batch);
+    newSubs.push(req.body.department);
+    newSubs.push(req.body.year);
+    newSubs.push(`${req.body.year}-${req.body.department}`);
+    newSubs.push(req.body.class);
+    newSubs.push(req.body.batch);
 
     // Student council details
     const studentCouncilFields = [
@@ -121,24 +121,45 @@ router.post(
     studentCouncilFields.forEach(field => {
       if (req.body[field]) {
         profileFields.studentCouncils[field] = req.body[field];
-        // add council rank/membership to subscriptions as well
-        profileFields.subscriptions.push(`${field}-${req.body[field]}`);
+        // add council rank/membership to newSubs as well
+        newSubs.push(`${field}-${req.body[field]}`);
       }
     });
 
-    StudentProfile.findOne({ userKey: req.user.id }).then(profile => {
-      if (profile) {
-        const errors = {
-          existingProfile:
-            "profile for this user already exists, try update route"
-        };
-        return res.status(400).json(errors);
-      }
-      new StudentProfile(profileFields)
-        .save()
-        .then(profile => res.status(201).json(profile))
-        .catch(err => res.status(400).json(err));
-    });
+    StudentProfile.findOne({ userKey: req.user.id })
+      .then(profile => {
+        if (profile) {
+          const errors = {
+            existingProfile:
+              "profile for this user already exists, try update route"
+          };
+          return res.status(400).json(errors);
+        }
+        new StudentProfile(profileFields)
+          .save()
+          .then(profile => {
+            User.findByIdAndUpdate(
+              req.user.id,
+              { $addToSet: { subscriptions: newSubs } },
+              // to avoid DeprecationWarning: collection.findAndModify is deprecated.
+              { new: true, useFindAndModify: false },
+              (err, user) => {
+                if (err) console.log(err);
+                res.status(201).json({
+                  user: {
+                    fname: user.fname,
+                    lname: user.lname,
+                    subscriptions: user.subscriptions,
+                    audience: user.audience
+                  },
+                  profile
+                });
+              }
+            );
+          })
+          .catch(err => res.status(400).json(err));
+      })
+      .catch(err => res.status(400).json(err));
   }
 );
 
@@ -168,7 +189,7 @@ router.post(
     // Separate route for mentees if any
 
     const profileFields = {};
-    profileFields.subscriptions = ["public", "professors"];
+    const newSubs = ["public", "professors"];
 
     // Set the userKey and userID from User model stored in req.user
     profileFields.userKey = req.user.id;
@@ -181,22 +202,43 @@ router.post(
     profileFields.department = req.body.department;
     profileFields.designation = req.body.designation;
 
-    // push subscriptions
-    profileFields.subscriptions.push(req.body.department);
+    // push newSubs
+    newSubs.push(req.body.department);
 
-    ProfessorProfile.findOne({ userKey: req.user.id }).then(profile => {
-      if (profile) {
-        const errors = {
-          existingProfile:
-            "profile for this user already exists, try update route"
-        };
-        return res.status(400).json(errors);
-      }
-      new ProfessorProfile(profileFields)
-        .save()
-        .then(profile => res.status(201).json(profile))
-        .catch(err => res.status(400).json(err));
-    });
+    ProfessorProfile.findOne({ userKey: req.user.id })
+      .then(profile => {
+        if (profile) {
+          const errors = {
+            existingProfile:
+              "profile for this user already exists, try update route"
+          };
+          return res.status(400).json(errors);
+        }
+        new ProfessorProfile(profileFields)
+          .save()
+          .then(profile => {
+            User.findByIdAndUpdate(
+              req.user.id,
+              { $addToSet: { subscriptions: newSubs } },
+              // to avoid DeprecationWarning: collection.findAndModify is deprecated.
+              { new: true, useFindAndModify: false },
+              (err, user) => {
+                if (err) console.log(err);
+                res.status(201).json({
+                  user: {
+                    fname: user.fname,
+                    lname: user.lname,
+                    subscriptions: user.subscriptions,
+                    audience: user.audience
+                  },
+                  profile
+                });
+              }
+            );
+          })
+          .catch(err => res.status(400).json(err));
+      })
+      .catch(err => res.status(400).json(err));
   }
 );
 

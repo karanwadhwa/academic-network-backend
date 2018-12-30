@@ -70,13 +70,13 @@ const ProfessorProfileSchema = new Schema({
     },
     default: []
   },
-
+  /* 
   subscriptions: {
     type: Array,
     required: true,
     default: ["public", "professors"]
   },
-
+ */
   education: {
     type: Array,
     school: {
