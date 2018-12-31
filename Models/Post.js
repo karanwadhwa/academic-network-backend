@@ -50,8 +50,7 @@ const PostSchema = new Schema({
       userKey: {
         type: Schema.Types.ObjectId,
         ref: "users",
-        required: true,
-        unique: true
+        required: true
       }
     }
   ],
