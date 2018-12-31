@@ -16,7 +16,7 @@ router.get("/test", (req, res) => {
   res.json({ msg: "/api/posts/test route" });
 });
 
-// @route   POST /api/posts/test
+// @route   POST /api/posts/
 // @desc    create post
 // @access  Protected
 router.post(
@@ -38,7 +38,58 @@ router.post(
       avatar: req.user.avatar
     });
 
-    newPost.save().then(post => res.status(201).json(post));
+    newPost
+      .save()
+      .then(post => res.status(201).json(post))
+      .catch(err => res.status(500).json(err));
+  }
+);
+
+// @route   GET /api/posts/
+// @desc    get all posts accessible by the logged in user
+// @access  Protected
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Post.find({ audience: { $in: req.user.subscriptions } })
+      .sort({ date: -1 })
+      .then(posts => res.json(posts))
+      .catch(err => res.status(404).json(err));
+  }
+);
+
+// @route   GET /api/posts/id=:id
+// @desc    get post by id if its accessible by the logged in user
+// @access  Protected
+router.get(
+  "/id=:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Post.findOne({
+      _id: req.params.id,
+      audience: { $in: req.user.subscriptions }
+    })
+      .then(posts => {
+        // If a post with valid id is found but the user isnt the intended audience
+        // because Post.find returns an empty array [] if the query results 0 posts
+        // findOne fixes it since it does not respond with an array but a single object.
+        // keeping this around regardless.
+        if (posts.length === 0) {
+          return res.status(400).json({
+            error:
+              "The post youre trying to access does not exist, or you are not a part of its intended audience."
+          });
+        }
+        res.json(posts);
+      })
+      .catch(err =>
+        res.status(404).json({
+          err,
+          error:
+            "The post youre trying to access does not exist, or you are not a part of its intended audience."
+        })
+      );
   }
 );
 
