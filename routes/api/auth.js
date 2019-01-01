@@ -94,17 +94,13 @@ router.post("/login", (req, res) => {
       if (isMatch) {
         // Create Payload for JWT
         const payload = {
-          id: user.id,
-          fname: user.fname,
-          lname: user.lname,
-          userID: user.userID,
-          email: user.email,
-          userType: user.type
+          id: user.id
         };
 
         // Sign Token
         jwt.sign(
           payload,
+          //"jwtSecret",
           process.env.JWT_SECRET,
           { expiresIn: "2h" },
           (err, token) => {
@@ -129,7 +125,7 @@ router.get(
   "/test-protected-route",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    res.json({ msg: "/api/auth/test-protected-route" });
+    res.json({ msg: "/api/auth/test-protected-route", user: req.user });
   }
 );
 
