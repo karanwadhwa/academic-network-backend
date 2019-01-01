@@ -93,4 +93,32 @@ router.get(
   }
 );
 
+// @route   DELETE /api/posts/id=:id
+// @desc    delete post by id, only accessible by the post author or admin
+// @access  Protected
+router.delete(
+  "/id=:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Post.findById(req.params.id)
+      .then(post => {
+        // check if the request is coming from the post author or admin
+        if (
+          post.userKey.toString() !== req.user.id &&
+          req.user.userType.toString() !== "admin"
+        ) {
+          return res.status(401).json({ error: "Unauthorized." });
+        }
+
+        // delete post
+        post
+          .remove()
+          .then(post =>
+            res.json({ success: true, msg: "Post deleted.", post })
+          );
+      })
+      .catch(err => res.status(400).json({ err, error: "post not found." }));
+  }
+);
+
 module.exports = router;
