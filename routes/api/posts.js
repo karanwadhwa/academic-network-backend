@@ -78,7 +78,7 @@ router.get(
         if (posts.length === 0) {
           return res.status(400).json({
             error:
-              "The post youre trying to access does not exist, or you are not a part of its intended audience."
+              "The post you're trying to access does not exist, or you are not a part of its intended audience."
           });
         }
         res.json(posts);
@@ -87,7 +87,7 @@ router.get(
         res.status(404).json({
           err,
           error:
-            "The post youre trying to access does not exist, or you are not a part of its intended audience."
+            "The post you're trying to access does not exist, or you are not a part of its intended audience."
         })
       );
   }
@@ -152,13 +152,46 @@ router.post(
         post.save().then(post => res.json(post));
       })
       .catch(err =>
-        res
-          .status(404)
-          .json({
-            err,
-            error:
-              "The post youre trying to access does not exist, or you are not a part of its intended audience."
-          })
+        res.status(404).json({
+          err,
+          error:
+            "The post you're trying to access does not exist, or you are not a part of its intended audience."
+        })
+      );
+  }
+);
+
+// @route   POST /api/posts/comment/id=:id
+// @desc    add comment to a post
+// @access  Protected
+router.post(
+  "/comment/id=:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Post.findOne({
+      _id: req.params.id,
+      audience: { $in: req.user.subscriptions }
+    })
+      .then(post => {
+        const newComment = {
+          body: req.body.body,
+          author: `${req.user.fname} ${req.user.lname}`.trim(),
+          userKey: req.user.id,
+          avatar: req.user.avatar
+        };
+
+        // Add to comments array
+        post.comments.push(newComment);
+
+        // Save and return post
+        post.save().then(post => res.json(post));
+      })
+      .catch(err =>
+        res.status(401).json({
+          err,
+          error:
+            "The post you're trying to access does not exist, or you are not a part of its intended audience."
+        })
       );
   }
 );
