@@ -121,4 +121,46 @@ router.delete(
   }
 );
 
+// @route   POST /api/posts/like/id=:id
+// @desc    add or remove like to a post
+// @access  Protected
+router.post(
+  "/like/id=:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Post.findOne({
+      _id: req.params.id,
+      audience: { $in: req.user.subscriptions }
+    })
+      .then(post => {
+        // check to see if the user has already liked the post
+        // remove users like if they have already liked the post
+        // find the index of users like in the likes array
+        const removeIndex = post.likes
+          .map(item => item.userKey.toString())
+          .indexOf(req.user.id);
+
+        if (removeIndex == -1) {
+          // Add user to likes array
+          post.likes.push({ userKey: req.user.id });
+        } else {
+          // remove entry from likes[removeIndex]
+          post.likes.splice(removeIndex);
+        }
+
+        // Save and return post
+        post.save().then(post => res.json(post));
+      })
+      .catch(err =>
+        res
+          .status(404)
+          .json({
+            err,
+            error:
+              "The post youre trying to access does not exist, or you are not a part of its intended audience."
+          })
+      );
+  }
+);
+
 module.exports = router;
