@@ -196,4 +196,62 @@ router.post(
   }
 );
 
+// @route   DELETE /api/posts/comment/pid=:pid&&cid=:cid
+// @desc    delete comment from a post
+// @access  Protected
+router.delete(
+  //pid = post.id and cid = post.comment.id
+  "/comment/pid=:pid&&cid=:cid",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Post.findOne({
+      _id: req.params.pid,
+      audience: { $in: req.user.subscriptions }
+    })
+      .then(post => {
+        // find the index of comment in the comments array
+        const removeIndex = post.comments
+          .map(comment => comment.id.toString())
+          .indexOf(req.params.cid);
+
+        // check if comment exists
+        if (removeIndex == -1) {
+          // comment not found
+          return res.status(404).json({
+            error: "Comment not found.",
+            pid: req.params.pid,
+            cid: req.params.cid
+          });
+        }
+        // check if the user is authorised to delete the comment
+        // i.e. admin or post/comment author
+        if (
+          post.comments[removeIndex].userKey.toString() !== req.user.id &&
+          post.userKey.toString() !== req.user.id &&
+          req.user.userType.toString() !== "admin"
+        ) {
+          return res.status(401).json({
+            error: "Unauthorized."
+          });
+        }
+
+        // remove entry from comments[removeIndex]
+        post.comments.splice(removeIndex, 1);
+        // Save and return post
+        post
+          .save()
+          .then(post =>
+            res.json({ success: true, msg: "Comment deleted.", post })
+          );
+      })
+      .catch(err =>
+        res.status(401).json({
+          err,
+          error:
+            "The post you're trying to access does not exist, or you are not a part of its intended audience."
+        })
+      );
+  }
+);
+
 module.exports = router;
