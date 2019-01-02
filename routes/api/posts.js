@@ -76,7 +76,7 @@ router.get(
         // findOne fixes it since it does not respond with an array but a single object.
         // keeping this around regardless.
         if (posts.length === 0) {
-          return res.status(400).json({
+          return res.status(401).json({
             error:
               "The post you're trying to access does not exist, or you are not a part of its intended audience."
           });
@@ -84,7 +84,7 @@ router.get(
         res.json(posts);
       })
       .catch(err =>
-        res.status(404).json({
+        res.status(401).json({
           err,
           error:
             "The post you're trying to access does not exist, or you are not a part of its intended audience."
@@ -117,7 +117,7 @@ router.delete(
             res.json({ success: true, msg: "Post deleted.", post })
           );
       })
-      .catch(err => res.status(400).json({ err, error: "post not found." }));
+      .catch(err => res.status(404).json({ err, error: "post not found." }));
   }
 );
 
@@ -152,7 +152,7 @@ router.post(
         post.save().then(post => res.json(post));
       })
       .catch(err =>
-        res.status(404).json({
+        res.status(401).json({
           err,
           error:
             "The post you're trying to access does not exist, or you are not a part of its intended audience."
