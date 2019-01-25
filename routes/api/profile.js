@@ -30,7 +30,7 @@ router.get(
   (req, res) => {
     const errors = {};
 
-    StudentProfile.findOne({ user: req.user.id })
+    StudentProfile.findOne({ userKey: req.user.id })
       .then(profile => {
         if (!profile) {
           errors.noprofile = "Profile not found.";
