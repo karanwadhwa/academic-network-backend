@@ -32,7 +32,7 @@ router.post(
     const newPost = new Post({
       title: req.body.title,
       body: req.body.body,
-      audience: req.body.audience,
+      audience: (req.body.audience).split(" "),
       author: `${req.user.fname} ${req.user.lname}`.trim(),
       userKey: req.user.id,
       avatar: req.user.avatar
