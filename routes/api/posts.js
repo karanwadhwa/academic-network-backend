@@ -23,6 +23,10 @@ router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
+    if (typeOf(req.body.audience === "string")) {
+      req.body.audience = req.body.audience.split(" ");
+    }
+
     // Input Validation
     const { errors, isValid } = validateCreatePostInput(req.body);
     if (!isValid) {
@@ -32,7 +36,7 @@ router.post(
     const newPost = new Post({
       title: req.body.title,
       body: req.body.body,
-      audience: (req.body.audience).split(" "),
+      audience: req.body.audience,
       author: `${req.user.fname} ${req.user.lname}`.trim(),
       userKey: req.user.id,
       avatar: req.user.avatar
