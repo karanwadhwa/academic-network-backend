@@ -118,14 +118,14 @@ router.post("/login", (req, res) => {
   });
 });
 
-// @route   GET /api/auth/test-protected-route
+// @route   GET /api/auth/whoami
 // @desc    for testing protected routes, logs jwt payload for the currently logged in user
 // @access  Protected
 router.get(
-  "/test-protected-route",
+  "/whoami",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    res.json({ msg: "/api/auth/test-protected-route", user: req.user });
+    res.json({ msg: "/api/auth/whoami", user: req.user });
   }
 );
 
