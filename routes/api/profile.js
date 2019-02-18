@@ -64,7 +64,7 @@ router.post(
     }
 
     const profileFields = {};
-    const newSubs = ["public", "students"];
+    const newSubs = ["Public", "Students"];
 
     // Set the userKey and userID from User model stored in req.user
     profileFields.userKey = req.user.id;
@@ -103,7 +103,7 @@ router.post(
     // subscription tags from courseDetailsFields
     newSubs.push(req.body.department);
     newSubs.push(req.body.year);
-    newSubs.push(`${req.body.year}-${req.body.department}`);
+    newSubs.push(`${req.body.year} ${req.body.department}`);
     newSubs.push(req.body.class);
     newSubs.push(req.body.batch);
 
@@ -122,7 +122,7 @@ router.post(
       if (req.body[field]) {
         profileFields.studentCouncils[field] = req.body[field];
         // add council rank/membership to newSubs as well
-        newSubs.push(`${field}-${req.body[field]}`);
+        newSubs.push(`${field} ${req.body[field]}`);
       }
     });
 
@@ -189,7 +189,7 @@ router.post(
     // Separate route for mentees if any
 
     const profileFields = {};
-    const newSubs = ["public", "professors"];
+    const newSubs = ["Public", "Professors"];
 
     // Set the userKey and userID from User model stored in req.user
     profileFields.userKey = req.user.id;
