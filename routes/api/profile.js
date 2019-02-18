@@ -30,15 +30,30 @@ router.get(
   (req, res) => {
     const errors = {};
 
-    StudentProfile.findOne({ userKey: req.user.id })
-      .then(profile => {
-        if (!profile) {
-          errors.noprofile = "Profile not found.";
-          return res.status(404).json(errors);
-        }
-        res.json(profile);
-      })
-      .catch(err => res.status(400).json(err));
+    if (req.user.userType === "student") {
+      StudentProfile.findOne({ userKey: req.user.id })
+        .then(profile => {
+          if (!profile) {
+            errors.noprofile = "Profile not found.";
+            return res.status(404).json(errors);
+          }
+          res.json(profile);
+        })
+        .catch(err => res.status(400).json(err));
+    } else if (req.user.userType === "professor") {
+      ProfessorProfile.findOne({ userKey: req.user.id })
+        .then(profile => {
+          if (!profile) {
+            errors.noprofile = "Profile not found.";
+            return res.status(404).json(errors);
+          }
+          res.json(profile);
+        })
+        .catch(err => res.status(400).json(err));
+    }
+    errors.existingProfile =
+      "This route only handles requests for 'student' and 'professor' user types.";
+    return res.status(501).json(errors);
   }
 );
 
