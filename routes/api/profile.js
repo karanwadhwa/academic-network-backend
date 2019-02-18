@@ -50,10 +50,11 @@ router.get(
           res.json(profile);
         })
         .catch(err => res.status(400).json(err));
+    } else {
+      errors.existingProfile =
+        "This route only handles requests for 'student' and 'professor' user types.";
+      return res.status(501).json(errors);
     }
-    errors.existingProfile =
-      "This route only handles requests for 'student' and 'professor' user types.";
-    return res.status(501).json(errors);
   }
 );
 
