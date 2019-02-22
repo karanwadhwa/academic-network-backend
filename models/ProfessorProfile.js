@@ -45,11 +45,25 @@ const ProfessorProfileSchema = new Schema({
   // mentee details
   mentees: {
     type: Array,
-    name: {
-      type: String,
+    userKey: {
+      type: Schema.Types.ObjectId,
+      ref: "users",
       required: true
     },
     userID: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    fname: {
+      type: String,
+      required: true
+    },
+    lname: {
+      type: String,
+      required: true
+    },
+    email: {
       type: String,
       required: true,
       unique: true
@@ -60,13 +74,15 @@ const ProfessorProfileSchema = new Schema({
       unique: true
     },
     phone: {
-      type: Number,
+      type: Number
+    },
+    courseDetails: {
+      type: Object,
       required: true
     },
-    email: {
-      type: String,
-      required: true,
-      unique: true
+    mentor: {
+      type: Object,
+      required: true
     },
     default: []
   },
