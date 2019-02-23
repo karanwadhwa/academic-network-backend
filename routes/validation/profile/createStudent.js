@@ -7,8 +7,9 @@ module.exports = validateCreateStudentInput = data => {
   let errors = {};
 
   data.smartCardID = !isEmpty(data.smartCardID) ? data.smartCardID : "";
-  data.mentorName = !isEmpty(data.mentorName) ? data.mentorName : "";
-  data.mentorID = !isEmpty(data.mentorID) ? data.mentorID : "";
+  data.phone = !isEmpty(data.phone) ? data.phone : "";
+  //data.mentorName = !isEmpty(data.mentorName) ? data.mentorName : "";
+  //data.mentorID = !isEmpty(data.mentorID) ? data.mentorID : "";
   data.department = !isEmpty(data.department) ? data.department : "";
   data.year = !isEmpty(data.year) ? data.year : "";
   data.class = !isEmpty(data.class) ? data.class : "";
@@ -28,16 +29,16 @@ module.exports = validateCreateStudentInput = data => {
     errors.smartCardID = "Student Smart Card no. is required";
   }
 
-  // Check Mentor fields
+  /*   // Check Mentor fields
   if (validator.isEmpty(data.mentorName)) {
     errors.mentorName = "Mentor name is required";
   }
-  if (!/^[a-zA-Z]{1}\d{3}$/.test(data.mentorID)) {
+  if (data.mentorID && !/^[a-zA-Z]{1}\d{3}$/.test(data.mentorID)) {
     errors.mentorID = "Invalid Staff id";
   }
   if (validator.isEmpty(data.mentorID)) {
     errors.mentorID = "Mentors Staff id is required";
-  }
+  } */
 
   // Check courseDetails fields
   if (validator.isEmpty(data.department)) {
@@ -63,19 +64,19 @@ module.exports = validateCreateStudentInput = data => {
   /*   // Check elective field if it exists
   if (!isEmpty(data.elective)) {
     if (!validator.isAlpha(data.elective)) {
-      errors.phone = "Invalid elective choice";
+      errors.elective = "Invalid elective choice";
     }
   } */
 
   // Check phone field if it exists
-  if (!isEmpty(data.phone)) {
-    if (!validator.isInt(data.phone)) {
-      errors.phone = "Enter your 10 digit phone no.";
-    }
-
-    if (!validator.isLength(data.phone, { min: 10, max: 10 })) {
-      errors.phone = "Enter your 10 digit phone no.";
-    }
+  if (validator.isEmpty(data.phone)) {
+    errors.phone = "Enter your 10 digit phone no.";
+  }
+  if (!validator.isInt(data.phone)) {
+    errors.phone = "Enter your 10 digit phone no.";
+  }
+  if (!validator.isLength(data.phone, { min: 10, max: 10 })) {
+    errors.phone = "Enter your 10 digit phone no.";
   }
 
   return {

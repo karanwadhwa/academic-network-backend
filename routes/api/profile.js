@@ -87,10 +87,10 @@ router.post(
     profileFields.userID = req.user.userID;
 
     profileFields.smartCardID = req.body.smartCardID;
+    profileFields.phone = req.body.phone;
 
     // optional fields
     if (req.body.bio) profileFields.bio = req.body.bio;
-    if (req.body.phone) profileFields.phone = req.body.phone;
 
     // mentor details
     profileFields.mentor = {};
