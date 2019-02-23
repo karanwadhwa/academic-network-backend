@@ -31,7 +31,10 @@ const StudentProfileSchema = new Schema({
 
   bio: String,
 
-  phone: Number,
+  phone: {
+    type: Number,
+    required: true
+  },
 
   badges: {
     type: [String],
@@ -40,14 +43,8 @@ const StudentProfileSchema = new Schema({
 
   // mentor details
   mentor: {
-    name: {
-      type: String,
-      required: true
-    },
-    userID: {
-      type: String,
-      required: true
-    }
+    name: String,
+    userID: String
   },
 
   courseDetails: {
