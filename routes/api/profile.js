@@ -275,23 +275,66 @@ router.post(
     // Input Validation
     const { errors, isValid } = validateUpdateMenteeInput(req.body);
     if (!isValid) {
-      return res.status(400).json(errors);
+      return res.status(404).json(errors);
     }
 
-    ProfessorProfile.findOne({ userKey: req.user.id }).then(profile => {
-      const newMentee = {
-        name: req.body.name,
-        userID: req.body.userID,
-        smartCardID: req.body.smartCardID,
-        phone: req.body.phone,
-        email: req.body.email
-      };
+    User.findOne({ userID: req.body.userID })
+      .then(user => {
+        if (!user) {
+          return res.status(404).json({ error: "Invalid UserID" });
+        }
+        StudentProfile.findOne({ userID: req.body.userID })
+          .then(studentProfile => {
+            if (!studentProfile) {
+              errors.noprofile =
+                "Student needs to setup their profile before you can add them as a mentee";
+              return res.status(404).json(errors);
+            }
+            const newMentee = {
+              userKey: user._id,
+              userID: user.userID,
+              fname: user.fname,
+              lname: user.lname,
+              email: user.email,
+              smartCardID: studentProfile.smartCardID,
+              phone: studentProfile.phone,
+              courseDetails: studentProfile.courseDetails
+            };
 
-      // Add to mentee array
-      profile.mentees.push(newMentee);
+            ProfessorProfile.findOne({ userKey: req.user.id })
+              .then(professorProfile => {
+                if (
+                  professorProfile.mentees.some(
+                    mentee => mentee.userID === req.body.userID
+                  )
+                ) {
+                  return res.status(400).json({
+                    error: `You already have ${req.body.userID} - ${
+                      user.fname
+                    } ${user.lname} added as your mentee`
+                  });
+                }
 
-      profile.save().then(profile => res.status(201).json(profile));
-    });
+                professorProfile.mentees.push(newMentee);
+                professorProfile.save().then(professorProfile => {
+                  studentProfile.mentor = {
+                    name: `${req.user.fname} ${req.user.lname}`,
+                    userID: req.user.userID
+                  };
+                  studentProfile
+                    .save()
+                    .then(studentProfile =>
+                      res.status(201).json({ professorProfile, studentProfile })
+                    );
+                });
+              })
+              .catch(err => res.status(400).json(err));
+          })
+          .catch(err => res.status(400).json(err));
+      })
+      .catch(() =>
+        res.status(500).json({ error: "Your request couldnt be processed" })
+      );
   }
 );
 

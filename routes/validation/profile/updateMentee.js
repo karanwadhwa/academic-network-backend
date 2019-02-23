@@ -11,16 +11,16 @@ const {
 module.exports = validateUpdateMenteeInput = data => {
   let errors = {};
 
-  data.name = !isEmpty(data.name) ? data.name : "";
+  //data.name = !isEmpty(data.name) ? data.name : "";
   data.userID = !isEmpty(data.userID) ? data.userID : "";
-  data.smartCardID = !isEmpty(data.smartCardID) ? data.smartCardID : "";
-  data.phone = !isEmpty(data.phone) ? data.phone : "";
-  data.email = !isEmpty(data.email) ? data.email : "";
+  //data.smartCardID = !isEmpty(data.smartCardID) ? data.smartCardID : "";
+  //data.phone = !isEmpty(data.phone) ? data.phone : "";
+  //data.email = !isEmpty(data.email) ? data.email : "";
 
   // Check name field
-  if (validator.isEmpty(data.name)) {
+  /*   if (validator.isEmpty(data.name)) {
     errors.name = "Mentee name is required";
-  }
+  } */
 
   // Check userID field
   if (
@@ -37,7 +37,7 @@ module.exports = validateUpdateMenteeInput = data => {
   }
 
   // Check smartCardID field
-  if (
+  /*   if (
     !validator.isLength(data.smartCardID, {
       min: Number(SMARTCARDID_LENGTH),
       max: Number(SMARTCARDID_LENGTH)
@@ -47,10 +47,10 @@ module.exports = validateUpdateMenteeInput = data => {
   }
   if (validator.isEmpty(data.smartCardID)) {
     errors.smartCardID = "Student Smart Card no. is required";
-  }
+  } */
 
   // Check phone field
-  if (validator.isEmpty(data.phone)) {
+  /*   if (validator.isEmpty(data.phone)) {
     errors.phone = "Student phone is required";
   }
   if (!validator.isInt(data.phone)) {
@@ -58,15 +58,15 @@ module.exports = validateUpdateMenteeInput = data => {
   }
   if (!validator.isLength(data.phone, { min: 10, max: 10 })) {
     errors.phone = "Enter your 10 digit phone no.";
-  }
+  } */
 
   // Check email field
-  if (validator.isEmpty(data.email)) {
+  /*   if (validator.isEmpty(data.email)) {
     errors.email = "Mentee email is required";
   }
   if (!validator.isEmail(data.email)) {
     errors.email = "Enter a valid email address";
-  }
+  } */
 
   return {
     errors,

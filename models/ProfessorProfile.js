@@ -80,10 +80,10 @@ const ProfessorProfileSchema = new Schema({
       type: Object,
       required: true
     },
-    mentor: {
+    /* mentor: {
       type: Object,
       required: true
-    },
+    }, */
     default: []
   },
   /* 
