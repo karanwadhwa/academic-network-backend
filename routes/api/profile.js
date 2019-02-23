@@ -92,10 +92,10 @@ router.post(
     // optional fields
     if (req.body.bio) profileFields.bio = req.body.bio;
 
-    // mentor details
+    /*     // mentor details
     profileFields.mentor = {};
     profileFields.mentor.name = req.body.mentorName;
-    profileFields.mentor.userID = req.body.mentorID;
+    profileFields.mentor.userID = req.body.mentorID; */
 
     // courseDetails
     const courseDetailsFields = [
