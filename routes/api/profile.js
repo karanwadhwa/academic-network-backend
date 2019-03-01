@@ -377,4 +377,40 @@ router.post(
   }
 );
 
+// @route   GET /api/profile/student/id=:id
+// @desc    fetch basic student info
+// @access  Protected
+router.get(
+  "/student/id=:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    User.findOne({ userID: req.params.id })
+      .then(user => {
+        if (!user) {
+          return res.status(404).json({ err: "Invalid Registration Number" });
+        }
+
+        StudentProfile.findOne({ userID: req.params.id })
+          .then(profile => {
+            if (!profile) {
+              return res.status(404).json({
+                err:
+                  "The student you're trying to access hasn't setup their profile yet."
+              });
+            }
+
+            return res.json({
+              fname: user.fname,
+              lname: user.lname,
+              department: profile.courseDetails.department,
+              class: profile.courseDetails.class,
+              mentor: profile.mentor
+            });
+          })
+          .catch(err => res.status(400).json(err));
+      })
+      .catch(err => status(400).json(err));
+  }
+);
+
 module.exports = router;
