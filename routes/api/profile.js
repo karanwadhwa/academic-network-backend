@@ -409,7 +409,24 @@ router.get(
           })
           .catch(err => res.status(400).json(err));
       })
-      .catch(err => status(400).json(err));
+      .catch(err => res.status(400).json(err));
+  }
+);
+
+// @route   POST /api/profile/update/avatar
+// @desc    update user avatar link
+// @access  Protected
+router.post(
+  "/update/avatar",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    User.findOne({ userID: req.user.userID })
+      .then(user => {
+        user.avatar = req.body.avatar;
+
+        user.save().then(user => res.json(user));
+      })
+      .catch(err => res.status(400).json(err));
   }
 );
 
