@@ -25,8 +25,15 @@ module.exports = passport => {
               .createCustomToken(uid, additionalClaims)
               .then(firebaseToken => {
                 return done(null, {
-                  ...user._doc,
-                  password: undefined,
+                  id: user.id,
+                  fname: user.fname,
+                  lname: user.lname,
+                  userID: user.userID,
+                  userType: user.userType,
+                  email: user.email,
+                  avatar: user.avatar,
+                  audience: user.audience,
+                  subscriptions: user.subscriptions,
                   firebaseToken
                 });
               })
