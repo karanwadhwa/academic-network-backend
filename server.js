@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
+const firebaseAdmin = require("firebase-admin");
 
 // import environment variables
 require("dotenv").config();
@@ -11,6 +12,9 @@ require("dotenv-safe").config();
 const auth = require("./routes/api/auth");
 const profile = require("./routes/api/profile");
 const posts = require("./routes/api/posts");
+
+// import firebase serviceAccount credentials
+const serviceAccount = require("./firebase-adminsdk.json");
 
 // destructured import environment variables
 const {
@@ -31,6 +35,11 @@ const app = express();
 // body-parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// initialize firebase
+firebaseAdmin.initializeApp({
+  credential: firebaseAdmin.credential.cert(serviceAccount)
+});
 
 // passport middleware
 app.use(passport.initialize());
